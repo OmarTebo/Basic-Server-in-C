@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-struct Server server_constructor(int domain, int service, int protocol, unsigned long interface, int port, int backlong, void (*launch)(void))
+struct Server server_constructor(int domain, int service, int protocol, unsigned long interface, int port, int backlog, void (*launch)(struct Server *server))
 {
     struct Server server;
 
@@ -11,7 +11,7 @@ struct Server server_constructor(int domain, int service, int protocol, unsigned
     server.protocol = protocol;
     server.interfrace = interface;
     server.port = port;
-    server.backlong = backlong;
+    server.backlog = backlog;
 
     server.address.sin_family = domain;
     server.address.sin_port = htons(port);
@@ -25,7 +25,7 @@ struct Server server_constructor(int domain, int service, int protocol, unsigned
         exit(1);
     }
 
-    if (bind(server.socket, (struct sockadrr*)&server.address, sizeof(server.address)) < 0)
+    if (bind(server.socket, (const struct sockaddr*)&server.address, sizeof(server.address)) < 0)
     {
         perror("Failed to bind socket...\n");
         exit(1);
@@ -40,11 +40,4 @@ struct Server server_constructor(int domain, int service, int protocol, unsigned
     server.launch = launch;
 
     return server;
-}
-
-int main()
-{
-
-    
-
 }
